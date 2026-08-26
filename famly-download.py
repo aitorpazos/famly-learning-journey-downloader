@@ -891,6 +891,21 @@ footer a:hover{{color:var(--ink);}}
 .filter-btn.active .filter-count{{background:rgba(255,255,255,0.25);color:white;}}
 /* Hidden tiles/cards/sections/nav-links when filtered out */
 .tile.filtered-out,.obs-card.filtered-out,.month-section.filtered-out,.nav-month.filtered-out{{display:none;}}
+/* Scroll-to-top button */
+.scroll-top{{
+  position:fixed;bottom:24px;right:24px;z-index:900;
+  width:48px;height:48px;border-radius:50%;border:none;
+  background:var(--ink);color:white;cursor:pointer;
+  font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  opacity:0;visibility:hidden;transform:translateY(12px);
+  transition:opacity 0.25s,visibility 0.25s,transform 0.25s,background 0.2s;
+}}
+.scroll-top.visible{{opacity:1;visibility:visible;transform:translateY(0);}}
+.scroll-top:hover{{background:var(--pink);}}
+@media (max-width:600px){{
+  .scroll-top{{bottom:16px;right:16px;width:42px;height:42px;font-size:19px;}}
+}}
 </style>
 </head>
 <body>
@@ -921,6 +936,7 @@ footer a:hover{{color:var(--ink);}}
   <div class="lightbox-content" id="lbContent"></div>
   <div class="lightbox-caption" id="lbCaption"></div>
 </div>
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top">↑</button>
 <script>
 (function(){{
   var lb=document.getElementById('lightbox'),lbC=document.getElementById('lbContent'),lbCap=document.getElementById('lbCaption');
@@ -1018,6 +1034,21 @@ footer a:hover{{color:var(--ink);}}
       applyFilter(filter);
     }};
   }});
+
+  // Scroll-to-top button: appears after scrolling down, smooth scroll to top on click
+  var scrollTopBtn=document.getElementById('scrollTop');
+  if(scrollTopBtn){{
+    window.addEventListener('scroll',function(){{
+      if(window.scrollY>400){{
+        scrollTopBtn.classList.add('visible');
+      }}else{{
+        scrollTopBtn.classList.remove('visible');
+      }}
+    }},{{passive:true}});
+    scrollTopBtn.onclick=function(){{
+      window.scrollTo({{top:0,behavior:'smooth'}});
+    }};
+  }}
 }})();
 </script>
 {zip_download_script}
