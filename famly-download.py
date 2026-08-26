@@ -133,8 +133,8 @@ while logged in to Famly. Here's exactly how, step by step.
   That's it! The script will:
     1. Connect to Famly and fetch every observation from your child's
        learning journey (this can take 10-30 seconds).
-    2. Download every photo, video, and document into a folder
-       named "famly-archive" (next to this script).
+    2. Download every photo, video, and document into the current
+       folder (or the one you specify with --output-dir).
     3. Build a "gallery" web page (index.html) you can open in your
        browser to browse everything by date — even offline.
     4. Open the gallery for you automatically.
@@ -225,7 +225,7 @@ while logged in to Famly. Here's exactly how, step by step.
 # ──────────────────────────────────────────────────────────────────────
 
 GRAPHQL_URL = "https://app.famly.co/graphql"
-DEFAULT_OUTPUT_DIR = "famly-archive"
+DEFAULT_OUTPUT_DIR = "."
 MAX_DOWNLOAD_WORKERS = 8  # parallel downloads
 PAGE_SIZE = 100            # observations per GraphQL page
 MAX_PAGES = 200            # safety cap (100 obs/page = 20,000 obs max)
@@ -976,7 +976,7 @@ def main():
     parser.add_argument("--token", required=False, help="Your Famly access token (x-famly-accesstoken)")
     parser.add_argument("--installation-id", required=False, help="Your Famly installation ID (x-famly-installationid)")
     parser.add_argument("--child-id", required=False, help="Your child's ID (from the URL)")
-    parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="Output folder (default: famly-archive)")
+    parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="Output folder (default: current directory)")
     parser.add_argument("--child-name", default="", help="Child's name for the gallery title (optional)")
     parser.add_argument(
         "--gallery-only",
