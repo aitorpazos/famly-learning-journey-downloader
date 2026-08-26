@@ -807,6 +807,8 @@ body{{
 footer{{text-align:center;padding:48px 24px 64px;color:var(--soft);font-size:13px;
   border-top:2px dashed var(--line);margin-top:40px;}}
 footer .heart{{color:var(--pink);}}
+footer a{{color:var(--soft);text-decoration:none;border-bottom:1px solid var(--line);transition:color 0.2s;}}
+footer a:hover{{color:var(--ink);}}
 @media (max-width:600px){{
   .tiles-grid{{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}}
   .obs-card{{padding:14px;border-radius:16px;}}
@@ -911,7 +913,7 @@ footer .heart{{color:var(--pink);}}
   <button class="filter-btn" data-filter="file">📄 PDFs <span class="filter-count">{total_files}</span></button>
 </div>
 <main>{cards_html}</main>
-<footer>Made with <span class="heart">♥</span> &nbsp;·&nbsp; {total_photos + total_videos + total_files} memories kept safe ✨</footer>
+<footer>Made with <span class="heart">♥</span> &nbsp;·&nbsp; {total_photos + total_videos + total_files} memories kept safe ✨<br/><a href="https://github.com/aitorpazos/famly-learning-journey-downloader" target="_blank" rel="noopener">GitHub</a></footer>
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="lbClose">✕</button>
   <button class="lightbox-nav prev" id="lbPrev">‹</button>
