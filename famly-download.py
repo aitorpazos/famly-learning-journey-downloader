@@ -556,7 +556,7 @@ def build_gallery(manifest, output_dir, child_name="", embed=False, embed_videos
                 if embed:
                     _zip_files[local] = src
                 tiles.append(
-                    f'<a class="tile tile-file" href="{esc(src)}" target="_blank" rel="noopener">'
+                    f'<a class="tile tile-file" data-type="file" href="{esc(src)}" target="_blank" rel="noopener">'
                     f'<div class="file-icon">📄</div><div class="file-name">{esc(f["name"])}</div>'
                     f'<div class="file-open">Open file ↗</div></a>'
                 )
@@ -867,6 +867,28 @@ footer .heart{{color:var(--pink);}}
   background:var(--cream);border:2px dashed var(--line);
   opacity:0.75;
 }}
+/* Media type filter bar */
+.media-filter{{
+  display:flex;gap:6px;justify-content:center;flex-wrap:wrap;
+  padding:10px 24px;background:var(--paper);
+  border-bottom:1px solid var(--line);
+}}
+.filter-btn{{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:999px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  color:var(--soft);background:transparent;
+  border:1px solid var(--line);transition:all 0.2s;
+}}
+.filter-btn:hover{{background:var(--cream);color:var(--ink);}}
+.filter-btn.active{{background:var(--ink);color:white;border-color:var(--ink);}}
+.filter-btn .filter-count{{
+  font-size:11px;font-weight:500;
+  background:var(--cream);padding:2px 7px;border-radius:999px;color:var(--soft);
+}}
+.filter-btn.active .filter-count{{background:rgba(255,255,255,0.25);color:white;}}
+/* Hidden tiles when filtered out */
+.tile.filtered-out{{display:none;}}
 </style>
 </head>
 <body>
@@ -882,6 +904,12 @@ footer .heart{{color:var(--pink);}}
   </div>{embed_button}
 </div></header>
 <nav class="timeline">{nav_html}</nav>
+<div class="media-filter" id="mediaFilter">
+  <button class="filter-btn active" data-filter="all">All <span class="filter-count">{total_photos + total_videos + total_files}</span></button>
+  <button class="filter-btn" data-filter="image">📷 Photos <span class="filter-count">{total_photos}</span></button>
+  <button class="filter-btn" data-filter="video">🎬 Videos <span class="filter-count">{total_videos}</span></button>
+  <button class="filter-btn" data-filter="file">📄 PDFs <span class="filter-count">{total_files}</span></button>
+</div>
 <main>{cards_html}</main>
 <footer>Made with <span class="heart">♥</span> &nbsp;·&nbsp; {total_photos + total_videos + total_files} memories kept safe ✨</footer>
 <div class="lightbox" id="lightbox">
@@ -951,6 +979,24 @@ footer .heart{{color:var(--pink);}}
     if(!ticking){{window.requestAnimationFrame(function(){{updateActive();ticking=false;}});ticking=true;}}
   }},{{passive:true}});
   updateActive();
+
+  // Media type filter: show/hide tiles based on type
+  var filterBtns=document.querySelectorAll('.filter-btn');
+  var allTiles=document.querySelectorAll('.tile[data-type]');
+  filterBtns.forEach(function(btn){{
+    btn.onclick=function(){{
+      var filter=btn.dataset.filter;
+      filterBtns.forEach(function(b){{b.classList.remove('active');}});
+      btn.classList.add('active');
+      allTiles.forEach(function(tile){{
+        if(filter==='all'||tile.dataset.type===filter){{
+          tile.classList.remove('filtered-out');
+        }}else{{
+          tile.classList.add('filtered-out');
+        }}
+      }});
+    }};
+  }});
 }})();
 </script>
 {zip_download_script}
