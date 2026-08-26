@@ -889,8 +889,8 @@ footer a:hover{{color:var(--ink);}}
   background:var(--cream);padding:2px 7px;border-radius:999px;color:var(--soft);
 }}
 .filter-btn.active .filter-count{{background:rgba(255,255,255,0.25);color:white;}}
-/* Hidden tiles when filtered out */
-.tile.filtered-out{{display:none;}}
+/* Hidden tiles/cards/sections/nav-links when filtered out */
+.tile.filtered-out,.obs-card.filtered-out,.month-section.filtered-out,.nav-month.filtered-out{{display:none;}}
 </style>
 </head>
 <body>
@@ -982,21 +982,40 @@ footer a:hover{{color:var(--ink);}}
   }},{{passive:true}});
   updateActive();
 
-  // Media type filter: show/hide tiles based on type
+  // Media type filter: show/hide tiles, empty cards, and empty month sections
   var filterBtns=document.querySelectorAll('.filter-btn');
   var allTiles=document.querySelectorAll('.tile[data-type]');
+  var allCards=document.querySelectorAll('.obs-card');
+  var allSections=document.querySelectorAll('.month-section');
+  var timelineLinks=document.querySelectorAll('.timeline .nav-month');
+  function applyFilter(filter){{
+    // 1. Show/hide individual tiles
+    allTiles.forEach(function(tile){{
+      if(filter==='all'||tile.dataset.type===filter){{
+        tile.classList.remove('filtered-out');
+      }}else{{
+        tile.classList.add('filtered-out');
+      }}
+    }});
+    // 2. Hide cards with no visible tiles
+    allCards.forEach(function(card){{
+      var hasVisible=card.querySelector('.tile:not(.filtered-out)');
+      card.classList.toggle('filtered-out',!hasVisible);
+    }});
+    // 3. Hide month sections with no visible cards, and their nav links
+    allSections.forEach(function(section){{
+      var hasVisibleCard=section.querySelector('.obs-card:not(.filtered-out)');
+      section.classList.toggle('filtered-out',!hasVisibleCard);
+      var link=document.querySelector('.timeline .nav-month[href="#'+section.id+'"]');
+      if(link)link.classList.toggle('filtered-out',!hasVisibleCard);
+    }});
+  }}
   filterBtns.forEach(function(btn){{
     btn.onclick=function(){{
       var filter=btn.dataset.filter;
       filterBtns.forEach(function(b){{b.classList.remove('active');}});
       btn.classList.add('active');
-      allTiles.forEach(function(tile){{
-        if(filter==='all'||tile.dataset.type===filter){{
-          tile.classList.remove('filtered-out');
-        }}else{{
-          tile.classList.add('filtered-out');
-        }}
-      }});
+      applyFilter(filter);
     }};
   }});
 }})();
